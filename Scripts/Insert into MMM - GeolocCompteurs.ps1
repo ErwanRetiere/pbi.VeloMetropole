@@ -9,7 +9,7 @@ Function Load_MMM_EcoCompt {
 	$cosmosDbContext = New-CosmosDbContext -Emulator -Database $database -Key $primaryKeySs
 	$collectionId = "GeolocCompteurs"
 
-	$documents = Get-Content -Path $filePath | ConvertFrom-Json
+	$documents = Get-Content -Path $filePath -Encoding utf8 | ConvertFrom-Json
 	$errors = @{}
 
 	Foreach ($document in $documents.features) {
@@ -18,6 +18,7 @@ Function Load_MMM_EcoCompt {
 			Write-Host "Chargement du document #$($documentId)"
 			$document.properties | Add-Member -Type NoteProperty -Name 'id' -Value $documentId
 			$documentJson = ConvertTo-Json $document.properties
+			Write-Host $documentJson
 			try {
 				New-CosmosDbDocument -Context $cosmosDbContext -CollectionId $collectionId -DocumentBody $documentJson -PartitionKey $documentId
 			}

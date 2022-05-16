@@ -3,13 +3,14 @@ $primaryKeySs = ConvertTo-SecureString -String $primaryKey -AsPlainText
 
 $database = "MMM"
 $cosmosDbContext = New-CosmosDbContext -Emulator -Database $database -Key $primaryKeySs
-$collectionId = "EcoCompt"
-$id = "MMM_EcoCompt_X2H20042635_202105120000x"
+$collectionId = "GeolocCompteurs"
+$id = "563115296"
 
 $errors = @{}
 
 try {
-    Get-CosmosDbDocument -Context $cosmosDbContext -CollectionId $collectionId -Id $id -PartitionKey $id
+    $document = Get-CosmosDbDocument -Context $cosmosDbContext -CollectionId $collectionId -Id $id -PartitionKey $id
+    Write-Host $document | ConvertFrom-Json
 }
 catch [Microsoft.PowerShell.Commands.HttpResponseException] {
     $errors.Add($id, $Error[0].Exception.Response.ReasonPhrase)
